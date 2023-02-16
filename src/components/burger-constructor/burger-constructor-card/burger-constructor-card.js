@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 const Card = ( {ingredient} ) => {
     return (
         <div className={styles.card}>
-            <img src={ingredient.image} />
+            <img src={ingredient.image} alt='ingredient' />
             <div className={styles.price}>
                 <p className='text text_type_digits-default'>
                     {ingredient.price}
@@ -20,7 +20,12 @@ const Card = ( {ingredient} ) => {
 }
 
 Card.propTypes = {
-    ingredient: PropTypes.object
+    ingredient: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        price: PropTypes.number.isRequired,
+        image: PropTypes.string.isRequired
+    }).isRequired
 }
 
 export default Card;

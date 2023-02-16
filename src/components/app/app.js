@@ -1,7 +1,8 @@
 import React from 'react';
-import AppHeader from './components/app-header/app-header';
-import BurgerConstructor from './components/burger-constructor/burger-constructor';
-import BurgerIngredients from './components/burger-ingredients/burger-ingredients';
+import AppHeader from '../app-header/app-header';
+import BurgerConstructor from '../burger-constructor/burger-constructor';
+import BurgerIngredients from '../burger-ingredients/burger-ingredients';
+import { API_URL } from '../../constants';
 import styles from './app.module.css';
 
 function App() {
@@ -16,8 +17,8 @@ function App() {
   const getFilms = () => {
     setHasError(false);
     setIsLoading(true);
-    fetch("https://norma.nomoreparties.space/api/ingredients")
-      .then(res => res.json())
+    fetch(API_URL)
+      .then(res => res.ok ? res.json() : res.json().then((err) => Promise.reject(err)))
       .then(data => {
         setData(data.data);
         setIsLoading(false);

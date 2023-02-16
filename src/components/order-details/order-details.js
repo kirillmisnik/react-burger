@@ -5,7 +5,7 @@ const OrderDetails = ( {ingredient} ) => {
 
     return (
         <div className={styles.container}>
-            <img className={styles.image} src={ingredient.image} />
+            <img className={styles.image} src={ingredient.image} alt='ingredient' />
             <p className="text text_type_main-medium">{ingredient.name}</p>
             <div className={styles.info}>
                 <div className={styles.infoItem}>
@@ -30,7 +30,14 @@ const OrderDetails = ( {ingredient} ) => {
 }
 
 OrderDetails.propTypes = {
-    ingredient: PropTypes.object
+    ingredient: PropTypes.shape({
+        image: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        calories: PropTypes.number.isRequired,
+        proteins: PropTypes.number.isRequired,
+        fat: PropTypes.number.isRequired,
+        carbohydrates: PropTypes.number.isRequired
+      }).isRequired,
 }
 
 export default OrderDetails;

@@ -21,7 +21,7 @@ const Modal = ( {children, handleCloseModal, heading} ) => {
 }
 
 Modal.propTypes = {
-    handleCloseModal: PropTypes.bool,
+    handleCloseModal: PropTypes.func.isRequired,
     heading: PropTypes.string
 }
 

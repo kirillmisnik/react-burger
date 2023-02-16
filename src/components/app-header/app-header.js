@@ -6,27 +6,27 @@ function AppHeader() {
     return (
         <header className={styles.header}>
             <div className={styles.menuBlockLeft}>
-                <button className={styles.menuItem}>
+                <a href='/' className={styles.menuItem}>
                     <BurgerIcon type="primary" />
                     <span className="text text_type_main-default">
                         Конструктор
                     </span>
-                </button>
-                <button className={styles.menuItem}>
+                </a>
+                <a href='/' className={styles.menuItem}>
                     <ListIcon type="secondary" />
                     <span className="text text_type_main-default text_color_inactive">
                         Лента заказов
                     </span>
-                </button>
+                </a>
             </div>
             <Logo className={styles.logo} />
             <div className={styles.menuBlockRight}>
-                <button className={styles.menuItem}>
+                <a href='/' className={styles.menuItem}>
                     <ProfileIcon type="secondary" />
                     <span className="text text_type_main-default text_color_inactive">
                         Личный кабинет
                     </span>
-                </button>
+                </a>
             </div>
         </header>
     )

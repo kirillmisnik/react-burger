@@ -9,7 +9,7 @@ const BurgerIngredients = ({ data }) => {
     const [buns, setBuns] = React.useState([]);
     const [visible, setVisible] = React.useState(false);
 
-    React.useEffect(() => {
+    React.useMemo(() => {
         setBuns(data.find(ingredient => ingredient.type === 'bun'));
     }, [data])
 
@@ -79,7 +79,14 @@ const BurgerIngredients = ({ data }) => {
 }
 
 BurgerIngredients.propTypes = {
-    data: PropTypes.array
+    data: PropTypes.arrayOf(
+        PropTypes.shape({
+            type: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+            price: PropTypes.number.isRequired,
+            image: PropTypes.string.isRequired
+        }).isRequired
+    ).isRequired
 }
 
 export default BurgerIngredients;

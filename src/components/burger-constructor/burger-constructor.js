@@ -1,5 +1,6 @@
 import React from "react";
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+import { BUN, SAUCE, MAIN } from '../../constants';
 import Card from './burger-constructor-card/burger-constructor-card';
 import PropTypes from 'prop-types';
 import Modal from '../modal/modal';
@@ -7,9 +8,8 @@ import OrderDetails from '../order-details/order-details';
 import styles from './burger-constructor.module.css';
 
 const BurgerConstructor = ({ data }) => {
-    const [current, setCurrent] = React.useState('bun');
-    const [visible, setVisible] = React.useState(false);
-    const [ingredient, setIngredient] = React.useState({});
+    const [current, setCurrent] = React.useState(BUN);
+    const [ingredient, setIngredient] = React.useState();
 
     const handleTab = (e) => {
         setCurrent(e);
@@ -20,17 +20,16 @@ const BurgerConstructor = ({ data }) => {
     }
 
     const handleOpenModal = (ingredient) => {
-        setVisible(true);
         setIngredient(ingredient);
     }
     
     const handleCloseModal = () => {
-        setVisible(false);
+        setIngredient(null);
     }
 
     return (
         <>
-            {visible && 
+            {ingredient && 
                 <Modal handleCloseModal={handleCloseModal} heading="Детали ингредиента">
                     <OrderDetails ingredient={ingredient} />
                 </Modal>}
@@ -39,38 +38,38 @@ const BurgerConstructor = ({ data }) => {
                     Соберите бургер
                 </h1>
                 <div style={{ display: 'flex' }}>
-                    <Tab value='bun' active={current === 'bun'} onClick={handleTab}>
+                    <Tab value={BUN} active={current === BUN} onClick={handleTab}>
                         Булки
                     </Tab>
-                    <Tab value='sauce' active={current === 'sauce'} onClick={handleTab}>
+                    <Tab value={SAUCE} active={current === SAUCE} onClick={handleTab}>
                         Соусы
                     </Tab>
-                    <Tab value='main' active={current === 'main'} onClick={handleTab}>
+                    <Tab value={MAIN} active={current === MAIN} onClick={handleTab}>
                         Начинки
                     </Tab>
                 </div>
                 <div className={styles.items}>
                     <div>
-                        <div id='bun' className={styles.menuSection}>
+                        <div id={BUN} className={styles.menuSection}>
                             <p className='text text_type_main-medium'>Булки</p>
                         </div>
-                        {data.filter(ingredient => ingredient.type === 'bun')
+                        {data.filter(ingredient => ingredient.type === BUN)
                             .map((ingredient, index) => <div key={index} className={styles.menuItem} onClick={() => handleOpenModal(ingredient)}>
                                 <Card ingredient={ingredient} /></div>)}
                     </div>
                     <div>
-                        <div id='sauce' className={styles.menuSection}>
+                        <div id={SAUCE} className={styles.menuSection}>
                             <p className='text text_type_main-medium'>Соусы</p>
                         </div>
-                        {data.filter(ingredient => ingredient.type === 'sauce')
+                        {data.filter(ingredient => ingredient.type === SAUCE)
                             .map((ingredient, index) => <div key={index} className={styles.menuItem} onClick={() => handleOpenModal(ingredient)}>
                                 <Card ingredient={ingredient} onClick={handleOpenModal} /></div>)}
                     </div>
                     <div>
-                        <div id='main' className={styles.menuSection}>
+                        <div id={MAIN} className={styles.menuSection}>
                             <p className='text text_type_main-medium'>Начинки</p>
                         </div>
-                        {data.filter(ingredient => ingredient.type === 'main')
+                        {data.filter(ingredient => ingredient.type === MAIN)
                             .map((ingredient, index) => <div key={index} className={styles.menuItem} onClick={() => handleOpenModal(ingredient)}>
                                 <Card ingredient={ingredient} onClick={handleOpenModal} /></div>)}
                     </div>
@@ -81,7 +80,14 @@ const BurgerConstructor = ({ data }) => {
 }
 
 BurgerConstructor.propTypes = {
-    data: PropTypes.array
+    data: PropTypes.arrayOf(
+        PropTypes.shape({
+            type: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+            price: PropTypes.number.isRequired,
+            image: PropTypes.string.isRequired
+        }).isRequired
+    ).isRequired
 }
 
 export default BurgerConstructor;

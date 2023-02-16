@@ -29,7 +29,7 @@ const ModalOverlay = ( {handleCloseModal} ) => {
 }
 
 ModalOverlay.propTypes = {
-    handleCloseModal: PropTypes.bool
+    handleCloseModal: PropTypes.func.isRequired
 }
 
 export default ModalOverlay;
