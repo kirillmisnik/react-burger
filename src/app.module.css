@@ -1,0 +1,22 @@
+.main {
+    display: flex;
+    justify-content: center;
+    gap: 5vh;
+}
+
+.menuBlock {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+.leftItem {
+    composes: menuBlock;
+    justify-content: start;
+}
+
+.rightItem {
+    composes: menuBlock;
+    justify-content: end;
+}
