@@ -1,19 +1,39 @@
 import React from "react";
 import { Button, CurrencyIcon, ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import PropTypes from 'prop-types';
+import { BUN } from '../../constants';
 import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import styles from './burger-ingredients.module.css';
+import { DataContext } from '../app/context/data-contex';
 
-const BurgerIngredients = ({ data }) => {
+const initialState = { total: 0 };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "add":
+      return { total: state.total + action.price };
+    case "reset":
+      return { total: 0 };
+    default:
+      throw new Error(`Wrong type of action: ${action.type}`);
+  }
+}
+
+const BurgerIngredients = () => {
+    const data = React.useContext(DataContext);
     const [buns, setBuns] = React.useState([]);
     const [visible, setVisible] = React.useState(false);
+    const [orderNumber, setOrderNumber] = React.useState(0);
+    const [state, dispatch] = React.useReducer(reducer, initialState);
 
     React.useMemo(() => {
-        setBuns(data.find(ingredient => ingredient.type === 'bun'));
+        setBuns(data.find(ingredient => ingredient.type === BUN));
+        dispatch({type: "reset"});
+        data.map((ingredient) => dispatch({ type: "add", price:ingredient.price }));
     }, [data])
 
     const handleOpenModal = () => {
+        makeOrder();
         setVisible(true);
     };
     
@@ -21,11 +41,28 @@ const BurgerIngredients = ({ data }) => {
         setVisible(false);
     };
 
+    const makeOrder = () => {
+        fetch('https://norma.nomoreparties.space/api/orders', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                ingredients: data.map((ingredient) => ingredient._id)
+            })
+        })
+        .then(res => res.ok ? res.json() : res.json().then((err) => Promise.reject(err)))
+        .then(orderNumber => {
+            setOrderNumber(orderNumber.order.number);
+        })
+    }
+
     return (
         <>
             {visible && 
                 <Modal handleCloseModal={handleCloseModal}>
-                    <IngredientDetails />
+                    <IngredientDetails orderNumber={orderNumber} />
                 </Modal>}
             <div className={styles.container}>
                 <div>
@@ -39,7 +76,7 @@ const BurgerIngredients = ({ data }) => {
                         />
                     </div>
                     <div className={styles.items}>
-                        {data.filter(ingredient => ingredient.type !== 'bun')
+                        {data.filter(ingredient => ingredient.type !== BUN)
                             .map((ingredient, index) => 
                             <div key={index}>
                                 <DragIcon type="primary" />
@@ -65,7 +102,7 @@ const BurgerIngredients = ({ data }) => {
                 <div className={styles.order}>
                     <div className={styles.orderPrice}>
                         <p className="text text_type_digits-medium">
-                            999
+                            {state.total}
                         </p>
                         <CurrencyIcon type="primary" />
                     </div>
@@ -76,17 +113,6 @@ const BurgerIngredients = ({ data }) => {
             </div>
         </>
     )
-}
-
-BurgerIngredients.propTypes = {
-    data: PropTypes.arrayOf(
-        PropTypes.shape({
-            type: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
-            price: PropTypes.number.isRequired,
-            image: PropTypes.string.isRequired
-        }).isRequired
-    ).isRequired
 }
 
 export default BurgerIngredients;

@@ -2,12 +2,13 @@ import React from "react";
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { BUN, SAUCE, MAIN } from '../../constants';
 import Card from './burger-constructor-card/burger-constructor-card';
-import PropTypes from 'prop-types';
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 import styles from './burger-constructor.module.css';
+import { DataContext } from '../app/context/data-contex';
 
-const BurgerConstructor = ({ data }) => {
+const BurgerConstructor = () => {
+    const data = React.useContext(DataContext);
     const [current, setCurrent] = React.useState(BUN);
     const [ingredient, setIngredient] = React.useState();
 
@@ -77,17 +78,6 @@ const BurgerConstructor = ({ data }) => {
             </div>
         </>
     )
-}
-
-BurgerConstructor.propTypes = {
-    data: PropTypes.arrayOf(
-        PropTypes.shape({
-            type: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
-            price: PropTypes.number.isRequired,
-            image: PropTypes.string.isRequired
-        }).isRequired
-    ).isRequired
 }
 
 export default BurgerConstructor;

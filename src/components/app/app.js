@@ -4,6 +4,7 @@ import BurgerConstructor from '../burger-constructor/burger-constructor';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients';
 import { API_URL } from '../../constants';
 import styles from './app.module.css';
+import { DataContext } from './context/data-contex';
 
 function App() {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -36,8 +37,10 @@ function App() {
         {
           !isLoading && !hasError && data.length &&
           <div className={styles.main}>
-            <BurgerConstructor data={data} className={styles.leftItem} />
-            <BurgerIngredients data={data} className={styles.rightItem} />
+            <DataContext.Provider value={data}>
+              <BurgerConstructor className={styles.leftItem} />
+              <BurgerIngredients className={styles.rightItem} />
+            </DataContext.Provider>
           </div>
         }
       </main>
