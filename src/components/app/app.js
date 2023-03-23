@@ -39,8 +39,8 @@ function App() {
           !isLoading && !hasError && data.length &&
           <div className={styles.main}>
             <DataContext.Provider value={data}>
-              <BurgerConstructor className={styles.leftItem} />
-              <BurgerIngredients className={styles.rightItem} />
+              <BurgerIngredients className={styles.leftItem} />
+              <BurgerConstructor className={styles.rightItem} />
             </DataContext.Provider>
           </div>
         }

@@ -1,84 +1,119 @@
-import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+import { Button, ConstructorElement, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import React from "react";
 
-import { BUN, MAIN, SAUCE } from '../../constants';
+import { BUN } from '../../constants';
 import { DataContext } from '../app/context/data-contex';
 import Modal from '../modal/modal';
-import OrderDetails from '../order-details/order-details';
-import Card from './burger-constructor-card/burger-constructor-card';
+import IngredientDetails from '../order-details/order-details';
 import styles from './burger-constructor.module.css';
 
-const BurgerConstructor = () => {
+const initialState = { total: 0 };
+
+function reducer(state, action) {
+    switch (action.type) {
+        case "add":
+            return { total: state.total + action.price };
+        case "reset":
+            return { total: 0 };
+        default:
+            throw new Error(`Wrong type of action: ${action.type}`);
+    }
+}
+
+const BurgerIngredients = () => {
     const data = React.useContext(DataContext);
-    const [current, setCurrent] = React.useState(BUN);
-    const [ingredient, setIngredient] = React.useState();
+    const [buns, setBuns] = React.useState([]);
+    const [visible, setVisible] = React.useState(false);
+    const [orderNumber, setOrderNumber] = React.useState(0);
+    const [state, dispatch] = React.useReducer(reducer, initialState);
 
-    const handleTab = (e) => {
-        setCurrent(e);
-        const element = document.getElementById(e);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
-    }
+    React.useMemo(() => {
+        setBuns(data.find(ingredient => ingredient.type === BUN));
+        dispatch({ type: "reset" });
+        data.map((ingredient) => dispatch({ type: "add", price: ingredient.price }));
+    }, [data])
 
-    const handleOpenModal = (ingredient) => {
-        setIngredient(ingredient);
-    }
+    const handleOpenModal = () => {
+        makeOrder();
+        setVisible(true);
+    };
 
     const handleCloseModal = () => {
-        setIngredient(null);
+        setVisible(false);
+    };
+
+    const makeOrder = () => {
+        fetch('https://norma.nomoreparties.space/api/orders', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                ingredients: data.map((ingredient) => ingredient._id)
+            })
+        })
+            .then(res => res.ok ? res.json() : res.json().then((err) => Promise.reject(err)))
+            .then(orderNumber => {
+                setOrderNumber(orderNumber.order.number);
+            })
     }
 
     return (
         <>
-            {ingredient &&
-                <Modal handleCloseModal={handleCloseModal} heading="Детали ингредиента">
-                    <OrderDetails ingredient={ingredient} />
+            {visible &&
+                <Modal handleCloseModal={handleCloseModal}>
+                    <IngredientDetails orderNumber={orderNumber} />
                 </Modal>}
             <div className={styles.container}>
-                <h1 className='text text_type_main-large'>
-                    Соберите бургер
-                </h1>
-                <div style={{ display: 'flex' }}>
-                    <Tab value={BUN} active={current === BUN} onClick={handleTab}>
-                        Булки
-                    </Tab>
-                    <Tab value={SAUCE} active={current === SAUCE} onClick={handleTab}>
-                        Соусы
-                    </Tab>
-                    <Tab value={MAIN} active={current === MAIN} onClick={handleTab}>
-                        Начинки
-                    </Tab>
+                <div>
+                    <div className={styles.bunItem}>
+                        <ConstructorElement
+                            type='top'
+                            isLocked={true}
+                            text={buns.name + " (верх)"}
+                            price={buns.price}
+                            thumbnail={buns.image}
+                        />
+                    </div>
+                    <div className={styles.items}>
+                        {data.filter(ingredient => ingredient.type !== BUN)
+                            .map((ingredient, index) =>
+                                <div key={index}>
+                                    <DragIcon type="primary" />
+                                    <ConstructorElement
+                                        isLocked={false}
+                                        text={ingredient.name}
+                                        price={ingredient.price}
+                                        thumbnail={ingredient.image}
+                                    />
+                                </div>
+                            )}
+                    </div>
+                    <div className={styles.bunItem}>
+                        <ConstructorElement
+                            type='bottom'
+                            isLocked={true}
+                            text={buns.name + " (низ)"}
+                            price={buns.price}
+                            thumbnail={buns.image}
+                        />
+                    </div>
                 </div>
-                <div className={styles.items}>
-                    <div>
-                        <div id={BUN} className={styles.menuSection}>
-                            <p className='text text_type_main-medium'>Булки</p>
-                        </div>
-                        {data.filter(ingredient => ingredient.type === BUN)
-                            .map((ingredient, index) => <div key={index} className={styles.menuItem} onClick={() => handleOpenModal(ingredient)}>
-                                <Card ingredient={ingredient} /></div>)}
+                <div className={styles.order}>
+                    <div className={styles.orderPrice}>
+                        <p className="text text_type_digits-medium">
+                            {state.total}
+                        </p>
+                        <CurrencyIcon type="primary" />
                     </div>
-                    <div>
-                        <div id={SAUCE} className={styles.menuSection}>
-                            <p className='text text_type_main-medium'>Соусы</p>
-                        </div>
-                        {data.filter(ingredient => ingredient.type === SAUCE)
-                            .map((ingredient, index) => <div key={index} className={styles.menuItem} onClick={() => handleOpenModal(ingredient)}>
-                                <Card ingredient={ingredient} onClick={handleOpenModal} /></div>)}
-                    </div>
-                    <div>
-                        <div id={MAIN} className={styles.menuSection}>
-                            <p className='text text_type_main-medium'>Начинки</p>
-                        </div>
-                        {data.filter(ingredient => ingredient.type === MAIN)
-                            .map((ingredient, index) => <div key={index} className={styles.menuItem} onClick={() => handleOpenModal(ingredient)}>
-                                <Card ingredient={ingredient} onClick={handleOpenModal} /></div>)}
-                    </div>
+                    <Button htmlType="button" type="primary" size="large" onClick={handleOpenModal}>
+                        Оформить заказ
+                    </Button>
                 </div>
             </div>
         </>
     )
 }
 
-export default BurgerConstructor;
+export default BurgerIngredients;
