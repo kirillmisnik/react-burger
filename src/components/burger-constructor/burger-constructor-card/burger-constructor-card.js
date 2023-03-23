@@ -1,8 +1,9 @@
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import styles from './burger-constructor-card.module.css';
 import PropTypes from 'prop-types'
 
-const Card = ( {ingredient} ) => {
+import styles from './burger-constructor-card.module.css';
+
+const Card = ({ ingredient }) => {
     return (
         <div className={styles.card}>
             <img src={ingredient.image} alt='ingredient' />

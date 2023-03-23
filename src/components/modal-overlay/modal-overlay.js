@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import styles from './modal-overlay.module.css';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-const ModalOverlay = ( {handleCloseModal} ) => {
+const ModalOverlay = ({ handleCloseModal }) => {
 
     React.useEffect(() => {
-        const keyDownCallback = function(e) {
+        const keyDownCallback = function (e) {
             e = e || window.event;
             var isEscape = false;
             if ("key" in e) {

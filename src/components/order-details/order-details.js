@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
+
 import styles from './order-details.module.css';
 
-const OrderDetails = ( {ingredient} ) => {
+const OrderDetails = ({ ingredient }) => {
 
     return (
         <div className={styles.container}>
@@ -37,7 +38,7 @@ OrderDetails.propTypes = {
         proteins: PropTypes.number.isRequired,
         fat: PropTypes.number.isRequired,
         carbohydrates: PropTypes.number.isRequired
-      }).isRequired,
+    }).isRequired,
 }
 
 export default OrderDetails;

@@ -1,9 +1,10 @@
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import PropTypes from 'prop-types';
+
 import ModalOverlay from '../modal-overlay/modal-overlay';
 import styles from './modal.module.css';
 
-const Modal = ( {children, handleCloseModal, heading} ) => {
+const Modal = ({ children, handleCloseModal, heading }) => {
     return (
         <>
             <ModalOverlay handleCloseModal={handleCloseModal}></ModalOverlay>

@@ -1,8 +1,9 @@
 import React from 'react';
+
+import { API_URL } from '../../constants';
 import AppHeader from '../app-header/app-header';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients';
-import { API_URL } from '../../constants';
 import styles from './app.module.css';
 import { DataContext } from './context/data-contex';
 
@@ -10,7 +11,7 @@ function App() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [hasError, setHasError] = React.useState(false);
   const [data, setData] = React.useState([]);
-  
+
   React.useEffect(() => {
     getFilms();
   }, [])

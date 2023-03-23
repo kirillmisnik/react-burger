@@ -1,22 +1,23 @@
+import { Button, ConstructorElement, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import React from "react";
-import { Button, CurrencyIcon, ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+
 import { BUN } from '../../constants';
-import Modal from '../modal/modal';
-import IngredientDetails from '../ingredient-details/ingredient-details';
-import styles from './burger-ingredients.module.css';
 import { DataContext } from '../app/context/data-contex';
+import IngredientDetails from '../ingredient-details/ingredient-details';
+import Modal from '../modal/modal';
+import styles from './burger-ingredients.module.css';
 
 const initialState = { total: 0 };
 
 function reducer(state, action) {
-  switch (action.type) {
-    case "add":
-      return { total: state.total + action.price };
-    case "reset":
-      return { total: 0 };
-    default:
-      throw new Error(`Wrong type of action: ${action.type}`);
-  }
+    switch (action.type) {
+        case "add":
+            return { total: state.total + action.price };
+        case "reset":
+            return { total: 0 };
+        default:
+            throw new Error(`Wrong type of action: ${action.type}`);
+    }
 }
 
 const BurgerIngredients = () => {
@@ -28,15 +29,15 @@ const BurgerIngredients = () => {
 
     React.useMemo(() => {
         setBuns(data.find(ingredient => ingredient.type === BUN));
-        dispatch({type: "reset"});
-        data.map((ingredient) => dispatch({ type: "add", price:ingredient.price }));
+        dispatch({ type: "reset" });
+        data.map((ingredient) => dispatch({ type: "add", price: ingredient.price }));
     }, [data])
 
     const handleOpenModal = () => {
         makeOrder();
         setVisible(true);
     };
-    
+
     const handleCloseModal = () => {
         setVisible(false);
     };
@@ -52,15 +53,15 @@ const BurgerIngredients = () => {
                 ingredients: data.map((ingredient) => ingredient._id)
             })
         })
-        .then(res => res.ok ? res.json() : res.json().then((err) => Promise.reject(err)))
-        .then(orderNumber => {
-            setOrderNumber(orderNumber.order.number);
-        })
+            .then(res => res.ok ? res.json() : res.json().then((err) => Promise.reject(err)))
+            .then(orderNumber => {
+                setOrderNumber(orderNumber.order.number);
+            })
     }
 
     return (
         <>
-            {visible && 
+            {visible &&
                 <Modal handleCloseModal={handleCloseModal}>
                     <IngredientDetails orderNumber={orderNumber} />
                 </Modal>}
@@ -77,17 +78,17 @@ const BurgerIngredients = () => {
                     </div>
                     <div className={styles.items}>
                         {data.filter(ingredient => ingredient.type !== BUN)
-                            .map((ingredient, index) => 
-                            <div key={index}>
-                                <DragIcon type="primary" />
-                                <ConstructorElement
-                                    isLocked={false}
-                                    text={ingredient.name}
-                                    price={ingredient.price}
-                                    thumbnail={ingredient.image}
-                                />
-                            </div>
-                        )}
+                            .map((ingredient, index) =>
+                                <div key={index}>
+                                    <DragIcon type="primary" />
+                                    <ConstructorElement
+                                        isLocked={false}
+                                        text={ingredient.name}
+                                        price={ingredient.price}
+                                        thumbnail={ingredient.image}
+                                    />
+                                </div>
+                            )}
                     </div>
                     <div className={styles.bunItem}>
                         <ConstructorElement

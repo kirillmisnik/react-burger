@@ -1,11 +1,12 @@
-import React from "react";
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import { BUN, SAUCE, MAIN } from '../../constants';
-import Card from './burger-constructor-card/burger-constructor-card';
+import React from "react";
+
+import { BUN, MAIN, SAUCE } from '../../constants';
+import { DataContext } from '../app/context/data-contex';
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
+import Card from './burger-constructor-card/burger-constructor-card';
 import styles from './burger-constructor.module.css';
-import { DataContext } from '../app/context/data-contex';
 
 const BurgerConstructor = () => {
     const data = React.useContext(DataContext);
@@ -16,21 +17,21 @@ const BurgerConstructor = () => {
         setCurrent(e);
         const element = document.getElementById(e);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+            element.scrollIntoView({ behavior: 'smooth' });
         }
     }
 
     const handleOpenModal = (ingredient) => {
         setIngredient(ingredient);
     }
-    
+
     const handleCloseModal = () => {
         setIngredient(null);
     }
 
     return (
         <>
-            {ingredient && 
+            {ingredient &&
                 <Modal handleCloseModal={handleCloseModal} heading="Детали ингредиента">
                     <OrderDetails ingredient={ingredient} />
                 </Modal>}
